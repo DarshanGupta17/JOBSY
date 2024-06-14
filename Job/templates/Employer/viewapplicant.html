@@ -1,0 +1,72 @@
+{% extends "main/base.html" %}
+{% load static %}
+{% block title %}JobDetail{% endblock title %}
+{% block css %}
+<link rel="stylesheet" href="{% static "/css/home.css" %}">
+<style>
+    .numbers{
+        cursor: pointer;
+        color:black;
+        background-color: white;
+        transition:0.4s ease
+    }
+    .numbers:hover{
+        color:white;
+        background-color: black;
+    }
+</style>
+{% endblock css %}
+{% block body %}
+<section class="bg-black text-light need" >
+    <div class="container p-4">
+        <div class="row text-center">
+            <h1 class="display-5" >{{applicant.first_name}} Applied For <span class="text-success"> - {{applicant.job.job_title}}</span></h1>
+        </div>
+        <hr class="bg-white" >
+    </div>
+</section>
+<section class="bg-black text-light p-5" >
+    <div class="container d-flex justify-content-center " >
+        <div class="row col-lg-12 d-flex justify-content-center ">
+            <div class="col-md-9 m-2 p-2">
+                <div class="card p-3 bg-light text-light" style="background-color:white; border-color:darkblue;">
+                    <div class="bg-dark rounded" >
+                    <div class="card-body">
+                    <div>
+                        <h4 class="card-title">{{applicant.first_name}} {{applicant.last_name}} -- {{applicant.user.email}}</h4>
+                    </div>
+                    <hr>
+                    <h5 class="card-text m-3">City - {{applicant.city}}</h5>
+                    <h5 class="card-text m-3">State - {{applicant.state}}</h5>
+                    <div class="d-flex m-3" >
+                        <h5>Skills acquired :- </h5>
+                        {{applicant.skills}}
+                    </div>
+                    {% if applicant.gender == "F" %}
+                        <h5 class="m-3">Gender :- Female</h5>
+                    {% elif applicant.gender == "M" %}
+                        <h5 class="m-3">Gender :- Male</h5>
+                    {% else %}
+                        <h5 class="m-3">Gender :-Other</h5>
+                    {% endif %}
+                    <p class="m-3" ><strong>Address :- </strong>{{applicant.address}}</p>
+                    </div>
+                    <h5 class="m-3">Resume :- </h5>
+                    <input type="file" value="{{applicant.resume}}" >
+                    {% if user.is_jobseeker and is_applied is None %}
+                    <div class="col-md-12 d-flex justify-content-center">
+                        <a href="{% url "JobSeeker:apply" job.slug %}" class="m-3 btn btn-warning rounded" >Apply</a>
+                    </div>
+                    {% elif user.is_jobseeker and is_applied is not None %}
+                    <div class="col-md-12 d-flex justify-content-center">
+                        <a href="{% url "JobSeeker:apply" job.slug %}" class="m-3 btn btn-success rounded  disabled ">!Already Applied</a>
+                    </div>
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock body %}

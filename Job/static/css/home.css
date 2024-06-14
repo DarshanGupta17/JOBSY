@@ -1,0 +1,37 @@
+.need{
+    margin-top: 120px;
+}
+.numbers{
+    cursor: pointer;
+    background-color: aqua;
+}
+.numbers:hover{
+    cursor: pointer;
+    background-color: black;
+}
+::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+    }
+    
+    ::-webkit-scrollbar-track {
+    border-radius: 12px;
+    }
+    
+    ::-webkit-scrollbar-track:vertical {
+    background: -webkit-linear-gradient(top, black, black); 
+    }
+    
+    ::-webkit-scrollbar-track:horizontal {
+    background: -webkit-linear-gradient(left, white, gold); 
+    }
+    
+    ::-webkit-scrollbar-thumb {
+    background: white;  
+    border:1px solid black;
+    border-radius: 12px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+    background: #88ba1c;  
+    }

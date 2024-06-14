@@ -1,0 +1,61 @@
+{% extends "main/base.html" %}
+{% load static %}
+{% block title %}Home{% endblock title %}
+{% block css %}
+<link rel="stylesheet" href="{% static "/css/home.css" %}">
+<style>
+    .numbers{
+        cursor: pointer;
+        color:black;
+        background-color: white;
+        transition:0.4s ease
+    }
+    .numbers:hover{
+        color:white;
+        background-color: black;
+    }
+</style>
+{% endblock css %}
+{% block body %}
+<section class="bg-black text-light need" >
+    <div class="container p-4">
+        <div class="row">
+            <div class="col col-md-5 text-center">
+                <h1 class="display-4" >A Better Path To</h1>
+                <h3 class="display-5" >More <span class="text-success">Opportunities<span></h3>
+            </div>
+            <div class="col col-md-6 p-3">
+                <img src="https://theemployabilityexpert.com/wp-content/uploads/2019/02/jobsearch-employability-expert-1080x675.jpg" class="img-fluid ${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|}" alt="">
+            </div>
+        </div>
+    </div>
+</section>
+<section class="bg-black text-light p-5" >
+    <div class="row col-md-12 text-center">
+        <div class="col col-md-4 d-flex justify-content-center">
+            <div class="col-md-5 p-4 border border-light rounded numbers">
+                12345+
+                <br>
+                Connected
+            </div>
+        </div>
+        
+        <div class="col col-md-4 d-flex justify-content-center">
+            <div class="col-md-5 p-4 border border-light rounded numbers" >
+                500+
+                <br>
+                Companies
+            </div>
+        </div>
+        <div class="col col-md-4 d-flex justify-content-center ">
+            <div class="col-md-5 p-4 border border-light rounded numbers" >
+                10000+
+                Happy
+                <br>
+                Students
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock body %}
