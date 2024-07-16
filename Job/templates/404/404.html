@@ -1,0 +1,41 @@
+{% extends "main/base.html" %}
+{% load static %}
+{% block title %}404 Error{% endblock title %}
+{% block body %}
+
+<section class="bg-black text-light need">
+    <div class="container p-4">
+        {% comment %} <div class="row text-center">
+            <h1 class="display-5"> <span class="text-success">404</span> Error</h1>
+        </div>
+        <hr class="bg-white"> {% endcomment %}
+    </div>
+</section>
+<section class="bg-black  justify-content-center text-light p-5">
+    <div class="container text-center blend-container">
+       <h5 class="display-5">Sorry!! This is <span class="text-danger" >Not</span> the page You're looking for</h5>
+       <img src="{% static "img/4040.png" %}" width="35%" >
+    </div>
+</section>
+
+<style>
+    {% comment %} .blend-container {
+        position: relative;
+        display: inline-block;
+    }
+    .blend-container img {
+        display: block;
+        mix-blend-mode: screen;
+    }
+    .blend-container::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0); /* Adjust opacity to blend more or less */
+    } {% endcomment %}
+</style>
+
+{% endblock body %}

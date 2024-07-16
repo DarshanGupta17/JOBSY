@@ -1,5 +1,7 @@
 from django.db import models
 from account.models import CustomUser
+from django.utils.text import slugify
+
 # Create your models here.
 
 class Salary(models.Model):
@@ -18,9 +20,9 @@ class Skill(models.Model):
 
 class PostJob(models.Model):
     employment_choice = [
-        ('I','InterShip'),
-        ('P','PartTime'),
-        ('F','FullTime')
+        ('Internship','InterShip'),
+        ('PartTime','PartTime'),
+        ('Fulltime','FullTime')
     ]
     user = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     job_title = models.CharField(max_length=200,default="")
@@ -33,11 +35,15 @@ class PostJob(models.Model):
     company_info = models.TextField()
     deadline = models.DateTimeField()
     expired = models.BooleanField(default=False)
-    slug = models.CharField(max_length=100)
-    date = models.DateField()
-    created_at = models.TimeField(auto_now_add=True)
+    slug = models.SlugField(max_length=100, unique=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return '{} ---> {}'.format(self.job_title,self.user.username)
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.job_title)
+        super(PostJob, self).save(*args, **kwargs)
     
 class JobApplicant(models.Model):
     gender_choice = [
@@ -57,8 +63,8 @@ class JobApplicant(models.Model):
     gender = models.CharField(choices=gender_choice,max_length=20)
     skills = models.CharField(max_length=200,default="")
     resume = models.FileField(upload_to="Resume")
-    is_withdrawn = models.BooleanField(default=False)
     is_applied = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return '{}-{}'.format(self.user.username,self.job.job_title)

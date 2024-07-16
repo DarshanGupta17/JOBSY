@@ -1,0 +1,25 @@
+<div class="col-md-3">
+    <div class="filter-section">
+        <h5>Filters</h5>
+        <form id="filterForm">
+            <div class="mb-3">
+                <label for="filterSkill" class="form-label">Skill</label>
+                <select id="filterSkill" name="skill" class="form-control">
+                    <option value="" disabled selected>Select a skill</option>
+                    {% for skill in skill %}
+                        <option value="{{ skill.id }}">{{ skill.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div id="selectedSkills" class="mb-3"></div>
+            <div class="mb-3">
+                <label for="filterLocation" class="form-label">Location</label>
+                <input type="text" id="filterLocation" name="location" class="form-control">
+            </div>
+            <input type="hidden" name="skills" id="skillsInput">
+            <button type="submit" class="btn btn-outline-light">Apply Filters</button>
+        </form>
+    </div>
+</div>
+<!-- Add jQuery CDN link to your base.html if not already included -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

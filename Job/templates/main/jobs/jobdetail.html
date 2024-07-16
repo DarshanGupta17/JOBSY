@@ -4,74 +4,115 @@
 {% block css %}
 <link rel="stylesheet" href="{% static "/css/home.css" %}">
 <style>
-    .numbers{
+    .numbers {
         cursor: pointer;
-        color:black;
+        color: black;
         background-color: white;
-        transition:0.4s ease
+        transition: 0.4s ease;
     }
-    .numbers:hover{
-        color:white;
+
+    .numbers:hover {
+        color: white;
         background-color: black;
+    }
+
+    .badge-custom {
+        font-size: 0.9rem;
+        padding: 0.5rem;
+        margin: 0.3rem;
+    }
+
+    .card-custom {
+        background-color: #1c1c1c;
+        border: none;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-custom .card-body {
+        background-color: #2b2b2b;
+    }
+
+    .card-custom h4,
+    .card-custom h5,
+    .card-custom p {
+        color: #ddd;
+    }
+
+    .card-custom hr {
+        border-top: 1px solid #444;
+    }
+
+    .apply-btn {
+        width: 100%;
+        font-size: 1.2rem;
+        transition: 0.3s;
+    }
+
+    .apply-btn:hover {
+        background-color: #ffcc00;
+        color: #000;
+    }
+
+    .disabled-btn {
+        opacity: 0.6;
     }
 </style>
 {% endblock css %}
 {% block body %}
-<section class="bg-black text-light need" >
+<section class="bg-black text-light need">
     <div class="container p-4">
         <div class="row text-center">
-            <h1 class="display-5" >Job <span class="text-success">Description</span> - {{job.job_title}}</h1>
+            <h1 class="display-5">Job <span class="text-success">Description</span> - {{job.job_title}}</h1>
         </div>
-        <hr class="bg-white" >
+        <hr class="bg-white">
     </div>
 </section>
-<section class="bg-black text-light p-5" >
-    <div class="container d-flex justify-content-center " >
-        <div class="row col-lg-12 d-flex justify-content-center ">
+<section class="bg-black text-light p-5">
+    <div class="container d-flex justify-content-center">
+        <div class="row col-lg-12 d-flex justify-content-center">
             <div class="col-md-9 m-2 p-2">
-                <div class="card p-3 bg-success text-light" style="background-color:white; border-color:darkblue;">
-                    <div class="bg-dark rounded" >
-                    <div class="card-body">
-                    <div>
-                        <h4 class="card-title">{{job.job_title}} @ {{job.company_name}}</h4>
-                        {% if job.Employment_Type == 'I' %}
-                        <bagde class="bg-danger rounded" >InternShip</bagde>
-                        {% elif job.Employment_Type == 'P' %}
-                        <bagde class="bg-primary rounded">PartTime</bagde>
-                        {% else %}
-                        <bagde class="bg-info rounded">FullTime</bagde>
-                        {% endif %}
-                    </div>
-                    <hr>
-                    <h5 class="card-text m-3">Location - {{job.location}}</h5>
-                    <div class="d-flex m-3" >
-                        <h5>Skills required :- </h5>
-                        {% for skill in job.skills.all %}
-                            <bagde class="bg-light rounded text-dark m-2" >{{skill.name}}</bagde>
-                        {% endfor %}
-                    </div>
-                    <h5 class="card-text m-3">salary ranges :- &nbsp {{job.salary.start}} - {{job.salary.end}} lacs/annum</h5>
-                    <h5 class="m-3">Job Description :-</h5>
-                    <hr>
-                    <p class="m-3">{{job.job_desc}}</p>
-                    <h5 class="m-3" >About Company:-</h5>
-                    <hr>
-                    <p class="m-3">{{job.company_info}}</p>
-                    </div>
-                    {% if user.is_jobseeker and is_applied is None %}
-                    <div class="col-md-12 d-flex justify-content-center">
-                        <a href="{% url "JobSeeker:apply" job.slug %}" class="m-3 btn btn-warning rounded" >Apply</a>
-                    </div>
-                    {% elif user.is_jobseeker and is_applied is not None %}
-                    <div class="col-md-12 d-flex justify-content-center">
-                        <a href="{% url "JobSeeker:apply" job.slug %}" class="m-3 btn btn-success rounded disabled">!Already Applied</a>
-                    </div>
-                    {% endif %}
+                <div class="card card-custom p-3">
+                    <div class="rounded">
+                        <div class="card-body">
+                            <div>
+                                <h4 class="card-title">{{job.job_title}} @ {{job.company_name}}</h4>
+                                {% if job.Employment_Type == 'Internship' %}
+                                <span class="badge bg-danger rounded badge-custom">Internship</span>
+                                {% elif job.Employment_Type == 'PartTime' %}
+                                <span class="badge bg-primary rounded badge-custom">Part-Time</span>
+                                {% else %}
+                                <span class="badge bg-info rounded badge-custom">Full-Time</span>
+                                {% endif %}
+                            </div>
+                            <hr>
+                            <h5 class="card-text m-3">Location - {{job.location}}</h5>
+                            <div class="d-flex m-3">
+                                <h5>Skills required:</h5>
+                                {% for skill in job.skills.all %}
+                                    <span class="badge bg-light text-dark badge-custom">{{skill.name}}</span>
+                                {% endfor %}
+                            </div>
+                            <h5 class="card-text m-3">Salary ranges: &nbsp;{{job.salary.start}} - {{job.salary.end}} lacs/annum</h5>
+                            <h5 class="m-3">Job Description:</h5>
+                            <hr>
+                            <p class="m-3">{{job.job_desc}}</p>
+                            <h5 class="m-3">About Company:</h5>
+                            <hr>
+                            <p class="m-3">{{job.company_info}}</p>
+                            {% if user.is_jobseeker and is_applied is None %}
+                            <div class="col-md-12 d-flex justify-content-center">
+                                <a href="{% url "JobSeeker:apply" job.slug %}" class="m-3 btn btn-warning rounded apply-btn">Apply</a>
+                            </div>
+                            {% elif user.is_jobseeker and is_applied is not None %}
+                            <div class="col-md-12 d-flex justify-content-center">
+                                <a href="{% url "JobSeeker:apply" job.slug %}" class="m-3 btn btn-success rounded apply-btn disabled" disabled>Already Applied</a>
+                            </div>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
-
 {% endblock body %}

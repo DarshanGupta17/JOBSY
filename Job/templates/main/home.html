@@ -4,55 +4,110 @@
 {% block css %}
 <link rel="stylesheet" href="{% static "/css/home.css" %}">
 <style>
-    .numbers{
+    .numbers {
         cursor: pointer;
-        color:black;
+        color: black;
         background-color: white;
-        transition:0.4s ease
+        transition: 0.4s ease;
     }
-    .numbers:hover{
-        color:white;
+
+    .numbers:hover {
+        color: white;
         background-color: black;
     }
 </style>
 {% endblock css %}
 {% block body %}
-<section class="bg-black text-light need" >
+<section class="bg-black text-light need">
     <div class="container p-4">
         <div class="row">
-            <div class="col col-md-5 text-center">
-                <h1 class="display-4" >A Better Path To</h1>
-                <h3 class="display-5" >More <span class="text-success">Opportunities<span></h3>
+            <div class="col-md-5 text-center">
+                <h1 class="display-4">A Better Path To</h1>
+                <h3 class="display-5">More <span class="text-success">Opportunities</span></h3>
             </div>
-            <div class="col col-md-6 p-3">
-                <img src="https://theemployabilityexpert.com/wp-content/uploads/2019/02/jobsearch-employability-expert-1080x675.jpg" class="img-fluid ${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|}" alt="">
+            <div class="col-md-6 p-3">
+                <img src="https://theemployabilityexpert.com/wp-content/uploads/2019/02/jobsearch-employability-expert-1080x675.jpg" class="img-fluid rounded" alt="">
             </div>
         </div>
     </div>
 </section>
-<section class="bg-black text-light p-5" >
-    <div class="row col-md-12 text-center">
-        <div class="col col-md-4 d-flex justify-content-center">
-            <div class="col-md-5 p-4 border border-light rounded numbers">
+<section class="bg-black text-light p-5">
+    <div class="row text-center">
+        <div class="col-md-4 d-flex justify-content-center mb-3">
+            <div class="col-md-8 p-4 border border-light rounded numbers">
                 12345+
                 <br>
                 Connected
             </div>
         </div>
-        
-        <div class="col col-md-4 d-flex justify-content-center">
-            <div class="col-md-5 p-4 border border-light rounded numbers" >
+        <div class="col-md-4 d-flex justify-content-center mb-3">
+            <div class="col-md-8 p-4 border border-light rounded numbers">
                 500+
                 <br>
                 Companies
             </div>
         </div>
-        <div class="col col-md-4 d-flex justify-content-center ">
-            <div class="col-md-5 p-4 border border-light rounded numbers" >
+        <div class="col-md-4 d-flex justify-content-center mb-3">
+            <div class="col-md-8 p-4 border border-light rounded numbers">
                 10000+
-                Happy
                 <br>
-                Students
+                Happy Students
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Company Description Section -->
+<section class="bg-dark text-light p-5">
+    <div class="container">
+        <div class="row">
+            <div class="col text-center">
+                <h2>About Jobber</h2>
+                <p>Jobber is a leading platform connecting job seekers with top companies. We believe in creating opportunities and helping individuals find the perfect job that suits their skills and aspirations. Our mission is to empower people to achieve their career goals by providing a seamless job search experience.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Additional Features Section -->
+<section class="bg-black text-light p-5">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-4 d-flex justify-content-center mb-3">
+                <div class="col-md-10 p-4 border border-light rounded numbers">
+                    <h4>Feature 1</h4>
+                    <p>Detailed job descriptions and requirements to help you find the perfect match.</p>
+                </div>
+            </div>
+            <div class="col-md-4 d-flex justify-content-center mb-3">
+                <div class="col-md-10 p-4 border border-light rounded numbers">
+                    <h4>Feature 2</h4>
+                    <p>Easy application process with one-click apply and resume upload.</p>
+                </div>
+            </div>
+            <div class="col-md-4 d-flex justify-content-center mb-3">
+                <div class="col-md-10 p-4 border border-light rounded numbers">
+                    <h4>Feature 3</h4>
+                    <p>Get notifications and alerts for the latest job postings.</p>
+                </div>
+            </div>
+            <div class="col-md-4 d-flex justify-content-center mb-3">
+                <div class="col-md-10 p-4 border border-light rounded numbers">
+                    <h4>Feature 4</h4>
+                    <p>Access to career resources and tips to improve your job search.</p>
+                </div>
+            </div>
+            <div class="col-md-4 d-flex justify-content-center mb-3">
+                <div class="col-md-10 p-4 border border-light rounded numbers">
+                    <h4>Feature 5</h4>
+                    <p>Connect with top companies and recruiters in your industry.</p>
+                </div>
+            </div>
+            <div class="col-md-4 d-flex justify-content-center mb-3">
+                <div class="col-md-10 p-4 border border-light rounded numbers">
+                    <h4>Feature 6</h4>
+                    <p>Personalized job recommendations based on your profile and preferences.</p>
+                </div>
             </div>
         </div>
     </div>

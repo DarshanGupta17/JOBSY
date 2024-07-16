@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+    crossorigin="anonymous"/>
+    <style>
+        .profile-section {
+            margin-top: 100px; /* Adjust to fit the navbar height */
+            background-color: black;
+            color: white;
+        }
+        .profile-pic {
+            width: 100%;
+            height: auto;
+            border-radius: 50%;
+        }
+        .profile-info {
+            overflow-y: auto;
+        }
+        .vertical-line {
+            border-left: 2px solid white;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<section class="profile-section">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4 p-4 bg-dark">
+                <div class="text-center">
+                    {% comment %} <img src="path/to/profile-pic.jpg" alt="Profile Picture" class="profile-pic mb-4"> {% endcomment %}
+                </div>
+                <h3>Technical Skills</h3>
+                <ul>
+                    <li>Skill 1</li>
+                    <li>Skill 2</li>
+                    <li>Skill 3</li>
+                    <!-- Add more skills as needed -->
+                </ul>
+            </div>
+            <div class="col-md-1 vertical-line p-0"></div>
+            <div class="col-md-7 p-4 bg-dark">
+                <h3>Education</h3>
+                <p>Details about education</p>
+                <h3>Experience</h3>
+                <p>Details about experience</p>
+                <h3>Achievements</h3>
+                <p>Details about achievements</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

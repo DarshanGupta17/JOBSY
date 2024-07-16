@@ -29,9 +29,8 @@
     <div class="container d-flex justify-content-center">
         <div class="row col-lg-12 d-flex justify-content-center">
             {% for app in applications %}
-                {% if app.is_withdrawn == False %}
-                <div class="col-md-9 m-2 p-2">
-                    <div class="card p-3 bg-light text-light" style="background-color:white; border-color:darkblue;">
+                <div class="col-md-9 m-2 ">
+                    <div class="card p-2 bg-light text-light" style="background-color:white; border-color:darkblue;">
                         <div class="bg-dark rounded">
                             <div class="card-body">
                                 <div>
@@ -51,7 +50,7 @@
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body">
-                                                            Are you sure you want to withdraw your application?
+                                                            Are you sure you want to withdraw your application to {{app.job.job_title}} @ {{app.job.company_name}}
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -65,21 +64,22 @@
                                             </div>
                                         </div>
                                     </div>
-                                    {% if app.job.Employment_Type == 'I' %}
+                                    {% if app.job.Employment_Type == 'Internship' %}
                                     <badge class="bg-danger rounded">Internship</badge>
-                                    {% elif app.job.Employment_Type == 'P' %}
+                                    {% elif app.job.Employment_Type == 'PartTime' %}
                                     <badge class="bg-primary rounded">Part-Time</badge>
                                     {% else %}
                                     <badge class="bg-info rounded">Full-Time</badge>
                                     {% endif %}
                                 </div>
+                                Applied on - {{app.created_at.date}} at {{app.created_at.time}}
                                 <hr>
                                 <h5 class="card-text m-3">Location - {{app.job.location}}</h5>
                                 <div class="d-flex m-3">
                                     <div class="col">
                                         <h5>Skills required:</h5>
                                         {% for skill in app.job.skills.all %}
-                                        <badge class="bg-light rounded text-dark m-2">{{skill.name}}</badge>
+                                        <badge class="badge bg-light text-dark m-2">{{skill.name}}</badge>
                                         {% endfor %}
                                     </div>
                                     <div class="col text-end">
@@ -90,7 +90,6 @@
                         </div>
                     </div>
                 </div>
-                {% endif %}
             {% endfor %}
         </div>
     </div>

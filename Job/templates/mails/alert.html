@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #dddddd;
+        }
+        .header h1 {
+            margin: 0;
+            color: #4CAF50;
+        }
+        .content {
+            padding: 20px;
+        }
+        .content h2 {
+            color: #4CAF50;
+        }
+        .content p {
+            line-height: 1.6;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 20px 0;
+            background-color: #4CAF50;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .footer {
+            text-align: center;
+            padding: 10px 0;
+            border-top: 1px solid #dddddd;
+            font-size: 12px;
+            color: #999999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Job Alert</h1>
+        </div>
+        <div class="content">
+            <h2>Hello {{ username }},</h2>
+            <p>We are excited to inform you that a new job matching your skills has been posted:</p>
+            <h3>{{ title }}</h3>
+            <p>Company: {{ job.company_name }}</p>
+            <p>Location: {{ job.location }}</p>
+            <p>Employment Type: {{ job.Employment_Type }}</p>
+            <p>Salary: {{ job.salary.start }} - {{ job.salary.end }} lacs/annum</p>
+            <p>Job Description: {{ job.job_desc }}</p>
+            <p>About Company: {{ job.company_info }}</p>
+            {% comment %} <a href="{% url 'jobdetail' job.slug %}" class="button">View Job Details</a> {% endcomment %}
+        </div>
+        <div class="footer">
+            <p>Best regards,<br>Jobsy Team</p>
+            <p>If you no longer wish to receive these emails, please update your job alerts settings in your account.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,45 +1,116 @@
-<nav class="navbar navbar-expand-lg bg-black navbar-dark fixed-top p-5">
-  <div class="container-fluid text-center">
-      <a class="navbar-brand" href="{% url "home" %}">JOBSY</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-              <li class="nav-item">
-                  <a class="nav-link" aria-current="page" href="{% url "home" %}">Home</a>
-              </li> 
-              <li class="nav-item">
-                <a class="nav-link" href="{% url "allJobs" %}">Jobs</a>
-                </li>
-                {% if user.is_jobseeker %}
-              <li class="nav-item">
-                <a class="nav-link" href="{% url "JobSeeker:applications" %}">My Applications</a>
-            </li>
-            {% else %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url "Employer:applicants" %}">Applicants</a>
-            </li>
-            {% endif %}
-            {% if user.is_authenticated %}
-            <li class="nav-item" >
-              <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                  {{user.username}}
-                </button>
-                <ul class="dropdown-menu bg-dark">
-                  <li class="dropdown-item">
-                    <a class="btn btn-danger" href="{% url "logout" %}">Logout</a>
-                </li>
-                </ul>
-              </div>
-            </li>
-          {% else %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url "login" %}">Login</a>
-        </li>
-          {% endif %}
-          </ul>
+ <nav class="navbar navbar-expand-lg bg-black navbar-dark fixed-top p-5">
+  <div class="container-fluid">
+    <a class="navbar-brand me-auto" href="{% url "home" %}">JOBSY</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
+      <div class="col-md-7">
+        <form class="d-flex" method="GET" action="{% url "Employer:searched_result" %}">
+          <input class="form-control me-2" type="search" placeholder="Search For Jobs using Name/Skill" name="search">
+          <button class="btn btn-outline-light" type="submit">
+            <i class="fa fa-search"></i>
+          </button>
+        </form>
       </div>
+    </div>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+      <ul class="navbar-nav mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="{% url "home" %}">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url "allJobs" %}">Jobs</a>
+        </li>
+        {% if user.is_jobseeker %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url "JobSeeker:applications" %}">My Applications</a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url "Employer:applicants" %}">Applicants</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url "Employer:postajob" %}">Post a job</a>
+        </li>
+        {% endif %}
+        {% if user.is_authenticated %}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              {{ user.username }}
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end bg-dark" aria-labelledby="navbarDropdown">
+              <li>
+                <a class="dropdown-item text-danger" href="{% url 'logout' %}">Logout</a>
+              </li>
+              <li>
+                <a class="dropdown-item text-warning" target="_blank" href="{% url "profile" %}">Profile</a>
+            </li>
+          </ul>
+      </li>
+
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url "login" %}">Login</a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
   </div>
 </nav>
+{% comment %} <nav class="navbar navbar-expand-lg bg-black navbar-dark fixed-top p-3">
+  <div class="container-fluid">
+    <a class="navbar-brand me-auto" href="{% url 'home' %}">JOBSY</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
+      <div class="col-md-7">
+        <form class="d-flex" method="GET" action="{% url 'Employer:searched_result' %}">
+          <input class="form-control me-2" type="search" placeholder="Search For Jobs using Name/Skill" name="search">
+          <button class="btn btn-outline-light" type="submit">
+            <i class="fa fa-search"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+      <ul class="navbar-nav mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="{% url 'home' %}">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'allJobs' %}">Jobs</a>
+        </li>
+        {% if user.is_jobseeker %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'JobSeeker:applications' %}">My Applications</a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'Employer:applicants' %}">Applicants</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'Employer:postajob' %}">Post a job</a>
+        </li>
+        {% endif %}
+        {% if user.is_authenticated %}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            {{ user.username }}
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end bg-dark" aria-labelledby="navbarDropdown">
+            <li>
+              <a class="dropdown-item text-light" href="{% url 'logout' %}">Logout</a>
+            </li>
+          </ul>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'login' %}">Login</a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav> {% endcomment %}

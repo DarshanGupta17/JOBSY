@@ -2,61 +2,431 @@
 {% load static %}
 {% block title %}AllJobs{% endblock title %}
 {% block css %}
-<link rel="stylesheet" href="{% static "/css/home.css" %}">
+<link rel="stylesheet" href="{% static "css/home.css" %}">
 <style>
-    .numbers{
+    .numbers {
         cursor: pointer;
-        color:black;
+        color: black;
         background-color: white;
-        transition:0.4s ease
+        transition: 0.4s ease;
     }
-    .numbers:hover{
-        color:white;
+
+    .numbers:hover {
+        color: white;
         background-color: black;
+    }
+
+    .bottom-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+
+    footer {
+        position: relative;
+        z-index: 0;
+    }
+
+    .filter-section {
+        position: sticky;
+        top: 80px;
+        z-index: 1000;
+        background-color: #000;
+        padding: 15px;
+        border: 1px solid #fff;
+        border-radius: 5px;
+    }
+
+    .filter-section h5 {
+        color: #fff;
+    }
+
+    .filter-section label {
+        color: #fff;
+    }
+
+    .filter-section .form-control {
+        background-color: #222;
+        color: #fff;
+    }
+
+    .filter-section .btn {
+        background-color: #fff;
+        color: #000;
+    }
+
+    .card {
+        margin-bottom: 20px;
+    }
+
+    .card-body {
+        padding: 10px;
+    }
+
+    .badge {
+        margin: 5px;
+    }
+
+    .cursor-pointer {
+        cursor: pointer;
     }
 </style>
 {% endblock css %}
 {% block body %}
-<section class="bg-black text-light need" >
+<section class="bg-black text-light need">
     <div class="container p-4">
         <div class="row text-center">
-            <h1 class="display-5" >Find The Job That Suits <span class="text-success">You<span></h1>
-            
+            <h1 class="display-5">Find The Job That Suits <span class="text-success">You</span></h1>
+            {% if search != "" and search is not None %}
+                <p>Showing result for {{search}}</p>
+            {% endif %}
         </div>
-        <hr class="bg-white" >
+        <hr class="bg-white">
     </div>
 </section>
-<section class="bg-black text-light p-5" >
-    <div class="container d-flex justify-content-center " >
-        <div class="row col-lg-12 d-flex justify-content-center ">
-        {% for item in jobs %}
-            <div class="col-md-9 mb-2">
-                <div class="card p-3 bg-success text-light" style="background-color:white; border-color:darkblue;">
-                    <div class="bg-dark rounded" >
-                    <div class="card-body">
-                    <div class="row" >
-                        <div class="col col-md-7" >
-                            <h4 class="card-title">{{item.job_title}}</h4>
-                            <P>Posted By:- {{item.user.username}} on {{item.date}}</p>
+<section class="bg-black text-light p-5">
+    <div class="container">
+        <div class="row">
+            {% include "main/jobs/filter.html" %}
+            <div class="col-md-9">
+                <div id="job-list" class="row">
+                    {% for item in jobs %}
+                        <div class="col-md-12 mb-4">
+                            <div class="card p-2 bg-success text-light">
+                                <div class="bg-dark rounded">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-7">
+                                                <h5 class="card-title">{{item.job_title}} @ {{item.company_name}}</h5>
+                                                <p>Posted By: {{item.user.username}} on {{item.created_at}}</p>
+                                            </div>
+                                            <div class="col-md-5 text-md-end">
+                                                <a class="btn btn-info" href="{% url "jobdetail" item.slug %}">View</a>
+                                            </div>
+                                        </div>
+                                        <h6 class="card-text">Location - {{item.location}}</h6>
+                                        <div class="d-flex flex-wrap">
+                                            {% for skill in item.skills.all %}
+                                                <span class="badge bg-light text-dark">{{skill.name}}</span>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col col-md-5 text-end" >
-                            <a class="btn btn-info" href="{% url "jobdetail" item.slug %}">View</a> 
-                        </div>
-                    </div>
-                    <h5 class="card-text">Location - {{item.location}}</h5>
-                    <div class="d-flex" >
-                        {% for skill in item.skills.all %}
-                            <bagde class="bg-light rounded text-dark m-2" >{{skill.name}}</bagde>
-                        {% endfor %}
-                    </div>
-                    
-                    </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
-        {% endfor %}
         </div>
     </div>
 </section>
 
+<button id="fixedButton" class="btn btn-outline-warning bottom-button" data-bs-toggle="modal" data-bs-target="#alertModal">Create Alert</button>
+
+<!-- Modal -->
+<div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md-4">
+        <div class="modal-content p-2 col-lg-12 bg-success rounded text-light">
+            <div  class="rounded justify-content-center bg-black">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="alertModalLabel">Create Alert</h5>
+                    <button type="button" class="btn-close bg-danger" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Your modal content goes here -->
+                    <form action="{% url "JobSeeker:create_alert" %}" method="GET">
+                        <div class="mb-3">
+                            <label for="alertSkill" class="form-label">Select Skill</label>
+                            <select id="alertSkill" name="skill" class="form-select rounded bg-dark text-light" aria-label="Select skill">
+                                {% for skill in skill %}
+                                    <option value="{{ skill.id }}">{{ skill.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <br>
+                            <b class="text-info">You will be notified about the recent job of this skill</b>
+                        </div>
+                        <button type="submit" class="btn btn-info">Create Alert</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-vo1mX7dB4dT1mL3XK2OKvMfQKh2B9i5U2HvxUGpHGvf2jX+7WwZujp9dFbN/Rpi5" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        var selectedSkills = [];
+        
+        $('#filterSkill').change(function() {
+            var skillId = $(this).val();
+            var skillText = $("#filterSkill option:selected").text();
+
+            if (skillId && !selectedSkills.includes(skillId)) {
+                selectedSkills.push(skillId);
+                updateSelectedSkills();
+                filterJobs();
+            }
+        });
+
+        function updateSelectedSkills() {
+            $('#selectedSkills').empty();
+            selectedSkills.forEach(function(skillId) {
+                var skillText = $("#filterSkill option[value='" + skillId + "']").text();
+                var skillTag = $('<span class="badge bg-light text-dark m-2"></span>').text(skillText);
+                
+                var closeButton = $('<span class="ms-2 cursor-pointer">×</span>').click(function() {
+                    removeSkill(skillId);
+                });
+
+                skillTag.append(closeButton);
+                $('#selectedSkills').append(skillTag);
+            });
+            $('#skillsInput').val(selectedSkills.join(','));
+        }
+
+        function removeSkill(skillId) {
+            selectedSkills = selectedSkills.filter(function(id) {
+                return id !== skillId;
+            });
+            updateSelectedSkills();
+            filterJobs();
+        }
+
+        $('#filterForm').on('submit', function(e) {
+            e.preventDefault();
+            filterJobs();
+        });
+
+        function filterJobs() {
+            var location = $('#filterLocation').val();
+            $.ajax({
+                url: window.location.pathname,
+                data: {
+                    skills: selectedSkills,
+                    location: location
+                },
+                success: function(response) {
+                    var jobs = response.jobs;
+                    $('#job-list').empty();
+                    jobs.forEach(function(job) {
+                        var jobCard = `
+                            <div class="col-md-12 mb-4">
+                                <div class="card p-2 bg-success text-light">
+                                    <div class="bg-dark rounded">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-7">
+                                                    <h5 class="card-title">${job.job_title} @ ${job.company_name}</h5>
+                                                    <p>Posted By: ${job.user} on ${job.created_at}</p>
+                                                </div>
+                                                <div class="col-md-5 text-md-end">
+                                                    <a class="btn btn-info" href="/jobDetail/${job.slug}">View</a>
+                                                </div>
+                                            </div>
+                                            <h6 class="card-text">Location - ${job.location}</h6>
+                                            <div class="d-flex flex-wrap">
+                                                ${job.skills.map(skill => `<span class="badge bg-light text-dark">${skill}</span>`).join('')}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        $('#job-list').append(jobCard);
+                    });
+                }
+            });
+        }
+    });
+</script>
 {% endblock body %}
+
+
+
+
+{% comment %} {% extends "main/base.html" %}
+{% load static %}
+{% block title %}AllJobs{% endblock title %}
+{% block css %}
+<link rel="stylesheet" href="{% static "/css/home.css" %}">
+<style>
+    .numbers {
+        cursor: pointer;
+        color: black;
+        background-color: white;
+        transition: 0.4s ease;
+    }
+
+    .numbers:hover {
+        color: white;
+        background-color: black;
+    }
+
+    .bottom-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+
+    footer {
+        position: relative;
+        z-index: 0;
+    }
+
+    .filter-section {
+        position: sticky;
+        top: 80px;
+        z-index: 1000;
+        background-color: #000;
+        padding: 15px;
+        border: 1px solid #fff;
+        border-radius: 5px;
+    }
+
+    .filter-section h5 {
+        color: #fff;
+    }
+
+    .filter-section label {
+        color: #fff;
+    }
+
+    .filter-section .form-control {
+        background-color: #222;
+        color: #fff;
+    }
+
+    .filter-section .btn {
+        background-color: #fff;
+        color: #000;
+    }
+
+    .card {
+        margin-bottom: 20px;
+    }
+
+    .card-body {
+        padding: 10px;
+    }
+
+    .badge {
+        margin: 5px;
+    }
+
+    .cursor-pointer {
+        cursor: pointer;
+    }
+</style>
+
+{% endblock css %}
+{% block body %}
+<section class="bg-black text-light need">
+    <div class="container p-4">
+        <div class="row text-center">
+            <h1 class="display-5">Find The Job That Suits <span class="text-success">You</span></h1>
+            {% if search != "" and search is not None %}
+                <p>Showing result for {{search}}</p>
+            {% endif %}
+        </div>
+        <hr class="bg-white">
+    </div>
+</section>
+<section class="bg-black text-light p-5">
+    <div class="container">
+        <div class="row">
+            {% include "main/jobs/filter.html" %}
+            <div class="col-md-9">
+                <div class="row">
+                    {% for item in jobs %}
+                        <div class="col-md-12 mb-4">
+                            <div class="card p-2 bg-success text-light">
+                                <div class="bg-dark rounded">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-7">
+                                                <h5 class="card-title">{{item.job_title}} @ {{item.company_name}}</h5>
+                                                <p>Posted By: {{item.user.username}} on {{item.created_at}}</p>
+                                            </div>
+                                            <div class="col-md-5 text-md-end">
+                                                <a class="btn btn-info" href="{% url "jobdetail" item.slug %}">View</a>
+                                            </div>
+                                        </div>
+                                        <h6 class="card-text">Location - {{item.location}}</h6>
+                                        <div class="d-flex flex-wrap">
+                                            {% for skill in item.skills.all %}
+                                                <span class="badge bg-light text-dark">{{skill.name}}</span>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<button id="fixedButton" class="btn btn-outline-warning bottom-button" data-bs-toggle="modal" data-bs-target="#alertModal">Create Alert</button>
+
+<!-- Modal -->
+<div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md-4">
+        <div class="modal-content p-2 col-lg-12 bg-success rounded text-light">
+            <div  class="rounded justify-content-center bg-black">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="alertModalLabel">Create Alert</h5>
+                    <button type="button" class="btn-close bg-danger" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Your modal content goes here -->
+                    <form action="{% url "JobSeeker:create_alert" %}" method="GET">
+                        <div class="mb-3">
+                            <label for="alertSkill" class="form-label">Select Skill</label>
+                            <select id="alertSkill" name="skill" class="form-select rounded bg-dark text-light" aria-label="Select skill">
+                                {% for skill in skill %}
+                                    <option value="{{ skill.id }}">{{ skill.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <br>
+                            <b class="text-info">You will be notified about the recent job of this skill</b>
+                        </div>
+                        <button type="submit" class="btn btn-info">Create Alert</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-vo1mX7dB4dT1mL3XK2OKvMfQKh2B9i5U2HvxUGpHGvf2jX+7WwZujp9dFbN/Rpi5" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var fixedButton = document.getElementById('fixedButton');
+        var footer = document.querySelector('footer');
+
+        function adjustButtonPosition() {
+            var footerRect = footer.getBoundingClientRect();
+            var buttonRect = fixedButton.getBoundingClientRect();
+            
+            if (footerRect.top <= buttonRect.height) {
+                fixedButton.style.bottom = (window.innerHeight - footerRect.top + 20) + 'px';
+            } else {
+                fixedButton.style.bottom = '20px';
+            }
+        }
+
+        window.addEventListener('scroll', adjustButtonPosition);
+        window.addEventListener('resize', adjustButtonPosition);
+
+        // Initial adjustment
+        adjustButtonPosition();
+    });
+</script>
+
+{% endblock body %} {% endcomment %}

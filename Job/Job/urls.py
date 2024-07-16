@@ -17,6 +17,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path , include
 from .import views
+
+# handle404 = views.fun404
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',views.Home,name="home"),
@@ -27,5 +30,8 @@ urlpatterns = [
     path('logout/',views.logout_view,name="logout"),
     path('register/',views.register,name="register"),
     path('alljobs/',views.get_all_jobs,name="allJobs"),
-    path('jobDetail/<slug:slug>',views.job_detail,name="jobdetail")
+    path('jobDetail/<slug:slug>',views.job_detail,name="jobdetail"),
+    path('profile/',views.Profile,name="profile")
+
+    
 ]
