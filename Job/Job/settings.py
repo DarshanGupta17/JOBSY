@@ -141,7 +141,6 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-<<<<<<< HEAD
 EMAIL_HOST_USER = 'guptadarshan786@gmail.com'
 EMAIL_HOST_PASSWORD = 'tkjfkesplctjjcnf'
 
@@ -197,6 +196,4 @@ CKEDITOR_CONFIGS = {
         ),
     }
 }
-=======
 # need to add Email credentials to send mails
->>>>>>> c47e92af5da96d29b7644a6aeef6046e5e703304
