@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect,HttpResponse
-from .models import JobApplicant,PostJob,Skill,Salary
+from .models import JobApplicant,PostJob,Skill,Salary,StatusOfApplication 
 from JobSeeker.models import Alert
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
@@ -36,7 +36,15 @@ def HandleApplications(request,slug):
         applicant.resume = request.FILES.get('resume')
         # print("resume == " , request.FILES['resume'])
         applicant.is_applied = True
+
+        #status of applications
+
         applicant.save()
+        status = StatusOfApplication()
+        status.status = 'p'
+        status.user = request.user
+        status.applicant = applicant
+        status.save()
         messages.success(request , "Application Submitted Successfully")
         return redirect("JobSeeker:applications")
 
@@ -44,6 +52,7 @@ def HandleApplications(request,slug):
 @employer_required
 def Applicants(request):
     applications = JobApplicant.objects.filter(author = request.user).order_by('-created_at')
+
     cntxt = {
         'applicants':applications
     }
@@ -52,8 +61,9 @@ def Applicants(request):
 @employer_required
 def View_Applicant(request,id):
     applicant = JobApplicant.objects.get(id=id)
+    status = StatusOfApplication.objects.get(applicant = applicant)
     print(applicant)
-    return render(request,"Employer/viewapplicant.html",{'applicant':applicant})
+    return render(request,"Employer/viewapplicant.html",{'applicant':applicant,'status':status})
 
 def searched_result(request):
     search = request.GET.get('search')
@@ -163,3 +173,41 @@ def post_job(request):
         'salaries': salaries
     }
     return render(request, 'Employer/PostJob.html', context)
+
+def ApplicationStatus(request,id):
+    applicant = JobApplicant.objects.get(id=id)
+    status = StatusOfApplication.objects.get(applicant = applicant)
+    if request.method == "POST":
+        st = request.POST.get('status')
+        status.status = st
+        status.save()
+    return redirect('Employer:viewapplicant',id)
+
+# skills = [
+#     ["Skill", "Type", "Description"],
+#     ["Python", "Programming Language", "A high-level, interpreted programming language."],
+#     ["JavaScript", "Programming Language", "A scripting language mainly used for creating web pages."],
+#     ["Java", "Programming Language", "A high-level, class-based, object-oriented programming language."],
+#     ["C#", "Programming Language", "A modern, object-oriented, and type-safe programming language."],
+#     ["Ruby", "Programming Language", "A dynamic, open source programming language with a focus on simplicity and productivity."],
+#     ["PHP", "Programming Language", "A popular general-purpose scripting language that is especially suited to web development."],
+#     ["Swift", "Programming Language", "A powerful and intuitive programming language for macOS, iOS, watchOS, and tvOS."],
+#     ["Go", "Programming Language", "A statically typed, compiled programming language designed at Google."],
+#     ["Kotlin", "Programming Language", "A modern programming language that makes developers happier."],
+#     ["Rust", "Programming Language", "A language empowering everyone to build reliable and efficient software."],
+#     ["TypeScript", "Programming Language", "A typed superset of JavaScript that compiles to plain JavaScript."],
+#     ["SQL", "Programming Language", "A domain-specific language used in programming and designed for managing data held in a relational database management system."],
+#     ["R", "Programming Language", "A programming language and free software environment for statistical computing and graphics."],
+#     ["React", "Framework", "A JavaScript library for building user interfaces."],
+#     ["Angular", "Framework", "A platform for building mobile and desktop web applications."],
+#     ["Vue.js", "Framework", "The Progressive JavaScript Framework."],
+#     ["Flask", "Framework", "A micro web framework written in Python."],
+#     ["Ruby on Rails", "Framework", "A server-side web application framework written in Ruby under the MIT License."],
+#     ["Spring", "Framework", "A comprehensive programming and configuration model for modern Java-based enterprise applications."],
+#     ["Laravel", "Framework", "A PHP framework for web artisans."],]
+# def AddSkill():
+#     for item in skills:
+#         s = Skill()
+#         s.name = item[0]
+#         s.save()
+# # AddSkill()

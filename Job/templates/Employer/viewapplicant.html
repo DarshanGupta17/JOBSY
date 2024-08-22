@@ -3,70 +3,120 @@
 {% block title %}JobDetail{% endblock title %}
 {% block css %}
 <link rel="stylesheet" href="{% static "/css/home.css" %}">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <style>
-    .numbers{
+    .numbers {
         cursor: pointer;
-        color:black;
+        color: black;
         background-color: white;
-        transition:0.4s ease
+        transition: 0.4s ease;
     }
-    .numbers:hover{
-        color:white;
+    .numbers:hover {
+        color: white;
         background-color: black;
+    }
+    #saveButton {
+        display: none;
+    }
+    .custom-select, .btn-save {
+        margin-top: 10px;
+        display: inline-block;
+        width: auto;
+    }
+    .status-badge {
+        margin-top: 10px;
+    }
+    .card-header-custom {
+        background-color: #343a40;
+        color: white;
+        padding: 10px;
+        border-bottom: 2px solid darkblue;
+    }
+    .card-body-custom {
+        background-color: white;
+        color: black;
     }
 </style>
 {% endblock css %}
 {% block body %}
-<section class="bg-black text-light need" >
+<section class="bg-black text-light need">
     <div class="container p-4">
         <div class="row text-center">
-            <h1 class="display-5" >{{applicant.first_name}} Applied For <span class="text-success"> - {{applicant.job.job_title}}</span></h1>
+            <h1 class="display-5">{{ applicant.first_name }} Applied For <span class="text-success"> - {{ applicant.job.job_title }}</span></h1>
         </div>
-        <hr class="bg-white" >
+        <hr class="bg-white">
     </div>
 </section>
-<section class="bg-black text-light p-5" >
-    <div class="container d-flex justify-content-center " >
-        <div class="row col-lg-12 d-flex justify-content-center ">
+<section class="bg-black text-light p-5">
+    <div class="container d-flex justify-content-center">
+        <div class="row col-lg-12 d-flex justify-content-center">
             <div class="col-md-9 m-2 p-2">
-                <div class="card p-3 bg-light text-light" style="background-color:white; border-color:darkblue;">
-                    <div class="bg-dark rounded" >
-                    <div class="card-body">
-                    <div>
-                        <h4 class="card-title">{{applicant.first_name}} {{applicant.last_name}} -- {{applicant.user.email}}</h4>
+                <div class="card">
+                    <div class="card-header card-header-custom">
+                        <div class="row">
+                            <div class="col-md-7">
+                                <h4 class="card-title">{{ applicant.first_name }} {{ applicant.last_name }} -- {{ applicant.user.email }}</h4>
+                            </div>
+                            <div class="col-md-5 text-end">
+                                {% if status.status == 'p' %}
+                                    <span class="badge bg-primary status-badge">Pending</span>
+                                {% elif status.status == 'u' %}
+                                    <span class="badge bg-warning status-badge">Under Progress</span>
+                                {% elif status.status == 's' %}
+                                    <span class="badge bg-success status-badge">Shortlisted</span>
+                                {% else %}
+                                    <span class="badge bg-danger status-badge">Rejected</span>
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
-                    <hr>
-                    <h5 class="card-text m-3">City - {{applicant.city}}</h5>
-                    <h5 class="card-text m-3">State - {{applicant.state}}</h5>
-                    <div class="d-flex m-3" >
-                        <h5>Skills acquired :- </h5>
-                        {{applicant.skills}}
-                    </div>
-                    {% if applicant.gender == "F" %}
-                        <h5 class="m-3">Gender :- Female</h5>
-                    {% elif applicant.gender == "M" %}
-                        <h5 class="m-3">Gender :- Male</h5>
-                    {% else %}
-                        <h5 class="m-3">Gender :-Other</h5>
-                    {% endif %}
-                    <p class="m-3" ><strong>Address :- </strong>{{applicant.address}}</p>
-                    </div>
-                    <h5 class="m-3">Resume :- </h5>
-                    <input type="file" value="{{applicant.resume}}" >
-                    {% if user.is_jobseeker and is_applied is None %}
-                    <div class="col-md-12 d-flex justify-content-center">
-                        <a href="{% url "JobSeeker:apply" job.slug %}" class="m-3 btn btn-warning rounded" >Apply</a>
-                    </div>
-                    {% elif user.is_jobseeker and is_applied is not None %}
-                    <div class="col-md-12 d-flex justify-content-center">
-                        <a href="{% url "JobSeeker:apply" job.slug %}" class="m-3 btn btn-success rounded  disabled ">!Already Applied</a>
-                    </div>
-                    {% endif %}
+                    <div class="card-body card-body-custom">
+                        <form method="POST" action="{% url 'Employer:applicationStatus' applicant.id %}">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-7">
+                                    <h5 class="card-text">City - {{ applicant.city }}</h5>
+                                    <h5 class="card-text">State - {{ applicant.state }}</h5>
+                                    <div class="d-flex">
+                                        <h5>Skills acquired: </h5>
+                                        <span>{{ applicant.skills }}</span>
+                                    </div>
+                                    {% if applicant.gender == "F" %}
+                                        <h5 class="mt-3">Gender: Female</h5>
+                                    {% elif applicant.gender == "M" %}
+                                        <h5 class="mt-3">Gender: Male</h5>
+                                    {% else %}
+                                        <h5 class="mt-3">Gender: Other</h5>
+                                    {% endif %}
+                                    <p class="mt-3"><strong>Address: </strong>{{ applicant.address }}</p>
+                                </div>
+                                <div class="col-md-5 text-end">
+                                    <select name="status" class="custom-select" onchange="showButton()">
+                                        <option value="p">pending</option>
+                                        <option value="s">Shortlist</option>
+                                        <option value="u">Under Progress</option>
+                                        <option value="r">Rejected</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-success btn-save" id="saveButton">Save Changes</button>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="mt-3">
+                            <h5>Resume:</h5>
+                            <input type="file" value="{{ applicant.resume }}">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+<script>
+    function showButton() {
+        var saveButton = document.getElementById('saveButton');
+        saveButton.style.display = 'inline-block';
+    }
+</script>
 
 {% endblock body %}

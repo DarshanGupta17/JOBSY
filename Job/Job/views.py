@@ -7,10 +7,26 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.core import serializers
 
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from Job.settings import EMAIL_HOST_USER
+import requests
+from JobSeeker.models import VerifyEmail, Experience , Jobseeker_Skill , Education
 
+def is_verifications_done(request):
+    try:
+        verify = VerifyEmail.objects.get(user=request.user)
+        verified = verify.is_verified
+    except VerifyEmail.DoesNotExist:
+        verified = False  # If no VerifyEmail record exists, consider the email not verified
+    return verified
 # @login_required(login_url="login")
 def Home(request):
-    return render(request,'main/home.html')
+    verified = None
+    if request.user.is_authenticated:
+        verified = is_verifications_done(request)
+    return render(request,'main/home.html',{'verified':verified})
 
 def login_view(request):
     msg = None
@@ -121,6 +137,7 @@ def get_all_jobs(request):
 @login_required(login_url="login")
 def job_detail(request,slug):
     job = PostJob.objects.get(slug=slug)
+    verified = is_verifications_done(request)
     is_applied = None
     user = request.user
     print(user)
@@ -129,10 +146,35 @@ def job_detail(request,slug):
             is_applied = JobApplicant.objects.filter(job=job).get(user=request.user).is_applied
         except JobApplicant.DoesNotExist:
             is_applied = None
-    return render(request,'main/jobs/jobdetail.html',{'job':job,'is_applied':is_applied})
+    return render(request,'main/jobs/jobdetail.html',{'job':job,'is_applied':is_applied,'verified':verified})
 
 # def fun404(request,exception):
 #     return render(request,"404/404.html")
 
 def Profile(request):
-    return render(request , "main/profile.html")
+    verified = None
+    experience = Experience.objects.filter(user = request.user)
+    skills = Jobseeker_Skill.objects.filter(user = request.user)
+    education = Education.objects.filter(user = request.user)
+    print(experience)
+    print(skills)
+    if request.user.is_authenticated:
+        verified = is_verifications_done(request)
+    return render(request , "main/Profile/profile.html",{'verified':verified,'experience':experience,'skills':skills,'education':education})
+
+# def skillApi():
+#     skill = str(input("enter skill :- "))
+#     url = f"https://api.apilayer.com/skills?q={skill}"
+
+#     payload = {}
+#     headers= {
+#     "apikey": "C40W9yqv1lSmkddZqFtNZpNx6NZPfBFM"
+#     }
+
+#     response = requests.request("GET", url, headers=headers, data = payload)
+
+#     status_code = response.status_code
+#     result = response.text
+#     print(result)
+
+# skillApi()

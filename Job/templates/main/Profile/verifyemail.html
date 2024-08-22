@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Input</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color:white;
+            {% comment %} background-color: #00000; {% endcomment %}
+        }
+        .otp-container {
+            text-align: center;
+            margin-top: -50px;
+        }
+        .otp-input {
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            text-align: center;
+            margin: 0 5px;
+        }
+        .timer {
+            margin-top: 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body class="" style="background-color:black" >
+    <div class="row" >
+        <h4>Email Verification@ JOBSY</h4>
+    </div>
+    <div class="row">
+        <div class="otp-container">
+            <p>Jobsy has Sent an Otp at {{user.email}}</p>
+            <h5>Please enter the otp to verify your email</h5>
+            <br><br>
+            <form action="{% url "JobSeeker:verifyemail" %}" method="POST">
+                {% csrf_token %}
+                <div class="form-group d-flex justify-content-center">
+                    <input type="text" name="otp1" class="form-control otp-input" maxlength="1" required>
+                    <input type="text" name="otp2" class="form-control otp-input" maxlength="1" required>
+                    <input type="text" name="otp3" class="form-control otp-input" maxlength="1" required>
+                    <input type="text" name="otp4" class="form-control otp-input" maxlength="1" required>
+                </div>
+                <button type="submit" class="btn btn-warning mt-3">Verify</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Timer
+        document.querySelectorAll('.otp-input').forEach((input, index, inputs) => {
+            input.addEventListener('input', (e) => {
+                if (e.target.value.length === e.target.maxLength) {
+                    if (index < inputs.length - 1) {
+                        inputs[index + 1].focus();
+                    }
+                }
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && input.value.length === 0 && index > 0) {
+                    inputs[index - 1].focus();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

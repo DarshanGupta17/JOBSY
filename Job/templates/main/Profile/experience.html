@@ -1,0 +1,9 @@
+{% for exp in experience %}
+<div class="d-flex" >
+    <h5><i class="fa-solid fa-building"></i>&nbsp&nbsp{{ exp.company_name }}</h5>
+    <button class="btn btn-transparent"><i class="fa-solid fa-pen-to-square  text-light"></i></button>
+</div>
+<p>{{ exp.Start_date }} - {{ exp.End_date }}</p>
+{{ exp.work_done|safe }}
+<hr>
+{% endfor %}

@@ -9,7 +9,8 @@ urlpatterns = [
     path('seeApplications',views.Applicants,name="applicants"),
     path('view_applicant/<int:id>',views.View_Applicant,name="viewapplicant"),
     path('searched_result/',views.searched_result , name="searched_result"),
-    path('post_a_job/',views.post_job,name="postajob")
+    path('post_a_job/',views.post_job,name="postajob"),
+    path('status/<int:id>',views.ApplicationStatus,name="applicationStatus")
 ]
 
 if settings.DEBUG:

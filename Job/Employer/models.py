@@ -17,7 +17,6 @@ class Skill(models.Model):
     def __str__(self):
         return self.name
 
-
 class PostJob(models.Model):
     employment_choice = [
         ('Internship','InterShip'),
@@ -68,6 +67,20 @@ class JobApplicant(models.Model):
 
     def __str__(self):
         return '{}-{}'.format(self.user.username,self.job.job_title)
+
+class StatusOfApplication(models.Model):
+    choice = [
+        ('s','shortlist'),
+        ('u','underProcess'),
+        ('r','rejected'),
+        ('p','pending')
+    ]
+    user = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+    status = models.CharField(choices=choice,max_length=20)
+    applicant = models.ForeignKey(JobApplicant,on_delete=models.CASCADE)
+
+    def __str__(self):
+        return '{}-for-{}'.format(self.status,self.applicant.first_name)
 
 class WithdrawnApplication(models.Model):
     user = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name="withdrawnJobseeker")

@@ -28,7 +28,7 @@
 <section class="bg-black text-light p-5">
     <div class="container d-flex justify-content-center">
         <div class="row col-lg-12 d-flex justify-content-center">
-            {% for app in applications %}
+            {% for app in status %}
                 <div class="col-md-9 m-2 ">
                     <div class="card p-2 bg-light text-light" style="background-color:white; border-color:darkblue;">
                         <div class="bg-dark rounded">
@@ -36,25 +36,35 @@
                                 <div>
                                     <div class="row">
                                         <div class="col">
-                                            <h4 class="card-title">{{app.job.job_title}} @ {{app.job.company_name}}</h4>
+                                            <h4 class="card-title">{{app.applicant.job.job_title}} @ {{app.applicant.job.company_name}}</h4>
                                         </div>
                                         <div class="col text-end">
-                                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#withdrawModal{{ app.id }}">Withdraw</button>
+                                            {% if app.status == 's' %}
+                                                <span class="badge bg-success" >Shortlisted</span>
+                                            {% elif app.status == 'p' %}
+                                                <span class="badge bg-primary" >Pending</span>
+                                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#withdrawModal{{ app.applicant.id }}">Withdraw</button>
+                                            
+                                            {% elif app.status == 'u' %}
+                                                <span class="badge bg-warning" >UnderProgress</span>
+                                            {% else %}
+                                                <span class="badge bg-danger" >Rejected</span>
+                                            {% endif %}
                                             
                                             <!-- Modal -->
-                                            <div class="modal fade" id="withdrawModal{{ app.id }}" tabindex="-1" aria-labelledby="withdrawModalLabel{{ app.id }}" aria-hidden="true">
+                                            <div class="modal fade" id="withdrawModal{{ app.applicant.id }}" tabindex="-1" aria-labelledby="withdrawModalLabel{{ app.applicant.id }}" aria-hidden="true">
                                                 <div class="modal-dialog  bg-dark">
                                                     <div class="modal-content bg-dark">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title" id="withdrawModalLabel{{ app.id }}">Confirm Withdrawal</h5>
+                                                            <h5 class="modal-title" id="withdrawModalLabel{{ app.applicant.id }}">Confirm Withdrawal</h5>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body">
-                                                            Are you sure you want to withdraw your application to {{app.job.job_title}} @ {{app.job.company_name}}
+                                                            Are you sure you want to withdraw your application to {{app.applicant.job.job_title}} @ {{app.applicant.job.company_name}}
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                            <form method="post" action="{% url 'JobSeeker:withdraw' app.id %}">
+                                                            <form method="post" action="{% url 'JobSeeker:withdraw' app.applicant.id %}">
                                                                 {% csrf_token %}
                                                                 <button type="submit" class="btn btn-danger">Withdraw</button>
                                                             </form>
@@ -64,26 +74,26 @@
                                             </div>
                                         </div>
                                     </div>
-                                    {% if app.job.Employment_Type == 'Internship' %}
+                                    {% if app.applicant.job.Employment_Type == 'Internship' %}
                                     <badge class="bg-danger rounded">Internship</badge>
-                                    {% elif app.job.Employment_Type == 'PartTime' %}
+                                    {% elif app.applicant.job.Employment_Type == 'PartTime' %}
                                     <badge class="bg-primary rounded">Part-Time</badge>
                                     {% else %}
                                     <badge class="bg-info rounded">Full-Time</badge>
                                     {% endif %}
                                 </div>
-                                Applied on - {{app.created_at.date}} at {{app.created_at.time}}
+                                Applied on - {{app.applicant.created_at.date}} at {{app.applicant.created_at.time}}
                                 <hr>
-                                <h5 class="card-text m-3">Location - {{app.job.location}}</h5>
+                                <h5 class="card-text m-3">Location - {{app.applicant.job.location}}</h5>
                                 <div class="d-flex m-3">
                                     <div class="col">
                                         <h5>Skills required:</h5>
-                                        {% for skill in app.job.skills.all %}
+                                        {% for skill in app.applicant.job.skills.all %}
                                         <badge class="badge bg-light text-dark m-2">{{skill.name}}</badge>
                                         {% endfor %}
                                     </div>
                                     <div class="col text-end">
-                                        <a href="{% url "jobdetail" app.job.slug %}" class="btn btn-warning">View Job Description</a>
+                                        <a href="{% url "jobdetail" app.applicant.job.slug %}" class="btn btn-warning">View Job Description</a>
                                     </div>
                                 </div>
                             </div>

@@ -1,0 +1,9 @@
+{% for item in education %}
+<div class="d-flex" >
+    <h5>{{item.School}}</h5>
+    <button class="btn btn-transparent"><i class="fa-solid fa-pen-to-square text-light"></i></button>
+</div>
+<p>{{item.Degree}}</p>
+<p>{{item.Start_date}} - {{item.End_date}}</p>
+<hr class="bg-light">
+{% endfor %}

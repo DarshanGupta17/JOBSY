@@ -99,14 +99,18 @@
                             <h5 class="m-3">About Company:</h5>
                             <hr>
                             <p class="m-3">{{job.company_info}}</p>
-                            {% if user.is_jobseeker and is_applied is None %}
-                            <div class="col-md-12 d-flex justify-content-center">
-                                <a href="{% url "JobSeeker:apply" job.slug %}" class="m-3 btn btn-warning rounded apply-btn">Apply</a>
-                            </div>
-                            {% elif user.is_jobseeker and is_applied is not None %}
-                            <div class="col-md-12 d-flex justify-content-center">
-                                <a href="{% url "JobSeeker:apply" job.slug %}" class="m-3 btn btn-success rounded apply-btn disabled" disabled>Already Applied</a>
-                            </div>
+                            {% if verified %}
+                                {% if user.is_jobseeker and is_applied is None %}
+                                <div class="col-md-12 d-flex justify-content-center">
+                                    <a href="{% url "JobSeeker:apply" job.slug %}" class="m-3 btn btn-warning rounded apply-btn">Apply</a>
+                                </div>
+                                {% elif user.is_jobseeker and is_applied is not None %}
+                                <div class="col-md-12 d-flex justify-content-center">
+                                    <a href="{% url "JobSeeker:apply" job.slug %}" class="m-3 btn btn-success rounded apply-btn disabled" disabled>Already Applied</a>
+                                </div>
+                                {% endif %}
+                            {% else %}
+                            <a href="{% url "JobSeeker:verifyemail" %}" class="m-3 btn btn-danger rounded apply-btn " >Verify Email Address</a>
                             {% endif %}
                         </div>
                     </div>
