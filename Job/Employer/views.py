@@ -15,7 +15,7 @@ from django.utils.html import strip_tags
 from Job.settings import EMAIL_HOST_USER
 from account.models import CustomUser
 from django.http import JsonResponse
-
+from Employer.send_mail_task import sendMail
 # Create your views here.
 @jobseeker_required
 def HandleApplications(request,slug):
@@ -145,23 +145,11 @@ def post_job(request):
                 deadline=deadline,
                 slug=slugify(job_title) + digit
             )
-            matching_alert = Alert.objects.filter(skills__in = skills).distinct()
             post_job.skills.set(skills)
             post_job.save()
-            for item in matching_alert:
-                subject = f"Your Job Alert for {item.skills}"
-                html_content = render_to_string("mails/alert.html",{
-                    "title":job_title,
-                    "username":item.user.username,
-                    "job":post_job
-                })
-                text_content = strip_tags(html_content)
-                r_list = [item.user.email]
-                email = EmailMultiAlternatives(subject,text_content,EMAIL_HOST_USER,r_list)
-                email.attach_alternative(html_content,"text/html")
-                email.send()
+            sendMail.delay(skills,job_title,post_job.id)
             messages.success(request, 'Job posted successfully!')
-            return redirect('allJobs')  # Redirect to the list of jobs or another appropriate view
+            return redirect('allJobs')
         except Salary.DoesNotExist:
             messages.error(request, 'Invalid salary selected.')
 
